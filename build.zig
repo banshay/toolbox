@@ -47,9 +47,9 @@ pub fn Repositories(comptime tuple: anytype) type {
     return @Struct(
         .auto,
         null,
-        field_names,
-        field_types,
-        field_attrs,
+        &field_names,
+        &field_types,
+        &field_attrs,
     );
 }
 
