@@ -1,7 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
-const EnumLiteral = @Type(.enum_literal);
+const EnumLiteral = enum { enum_literal };
 
 const FetchTarget = struct {
     name: []const u8,
@@ -13,26 +13,49 @@ const FetchTarget = struct {
 
 pub fn Repositories(comptime tuple: anytype) type {
     std.debug.assert(@typeInfo(@TypeOf(tuple)).@"struct".is_tuple);
-    return @Type(.{
-        .@"struct" = .{
-            .layout = .auto,
-            .fields = blk: {
-                var fields: [tuple.len]std.builtin.Type.StructField = undefined;
-                for (tuple, 0..) |literal, i| {
-                    fields[i] = .{
-                        .name = @tagName(literal),
-                        .type = FetchTarget,
-                        .default_value_ptr = null,
-                        .is_comptime = false,
-                        .alignment = if (@sizeOf(FetchTarget) > 0) @alignOf(FetchTarget) else 0,
-                    };
-                }
-                break :blk &fields;
-            },
-            .decls = &.{},
-            .is_tuple = false,
-        },
-    });
+
+    var fields: [tuple.len]std.builtin.Type.StructField = undefined;
+    for (tuple, 0..) |literal, i| {
+        fields[i] = .{
+            .name = @tagName(literal),
+            .type = FetchTarget,
+            .default_value_ptr = null,
+            .is_comptime = false,
+            .alignment = if (@sizeOf(FetchTarget) > 0) @alignOf(FetchTarget) else 0,
+        };
+    }
+
+    var field_names: [tuple.len][]const u8 = undefined;
+    for (tuple, 0..) |literal, i| {
+        field_names[i] = @tagName(literal);
+    }
+
+    const field_types: [tuple.len]type = &.{FetchTarget} ** tuple.len;
+
+    // /// This data structure is used by the Zig language code generation and
+    // /// therefore must be kept in sync with the compiler implementation.
+    // pub const Attributes = struct {
+    //     @"comptime": bool = false,
+    //     @"align": ?usize = null,
+    //     default_value_ptr: ?*const anyopaque = null,
+    // };
+
+    const field_attrs: [tuple.len]std.builtin.Type.StructField.Attributes = undefined;
+    for (field_attrs) |*attr| {
+        attr.* = .{
+            .default_value_ptr = null,
+            .@"align" = if (@sizeOf(FetchTarget) > 0) @alignOf(FetchTarget) else 0,
+            .@"comptime" = false,
+        };
+    }
+
+    return @Struct(
+        .auto,
+        null,
+        field_names,
+        field_types,
+        field_attrs,
+    );
 }
 
 pub fn isCSource(name: []const u8) bool {
