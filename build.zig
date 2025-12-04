@@ -30,9 +30,9 @@ pub fn Repositories(comptime tuple: anytype) type {
         field_names[i] = @tagName(literal);
     }
 
-    const field_types: [tuple.len]type = undefined;
-    for (field_types) |*types| {
-        types.* = FetchTarget;
+    var field_types: [tuple.len]type = undefined;
+    for (tuple, 0..) |_, i| {
+        field_types[i] = FetchTarget;
     }
 
     const field_attrs: [tuple.len]std.builtin.Type.StructField.Attributes = undefined;
