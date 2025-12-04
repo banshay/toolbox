@@ -35,9 +35,9 @@ pub fn Repositories(comptime tuple: anytype) type {
         field_types[i] = FetchTarget;
     }
 
-    const field_attrs: [tuple.len]std.builtin.Type.StructField.Attributes = undefined;
-    for (field_attrs) |*attr| {
-        attr.* = .{
+    var field_attrs: [tuple.len]std.builtin.Type.StructField.Attributes = undefined;
+    for (tuple, 0..) |_, i| {
+        field_attrs[i] = .{
             .default_value_ptr = null,
             .@"align" = if (@sizeOf(FetchTarget) > 0) @alignOf(FetchTarget) else 0,
             .@"comptime" = false,
