@@ -30,15 +30,10 @@ pub fn Repositories(comptime tuple: anytype) type {
         field_names[i] = @tagName(literal);
     }
 
-    const field_types: [tuple.len]type = &.{FetchTarget} ** tuple.len;
-
-    // /// This data structure is used by the Zig language code generation and
-    // /// therefore must be kept in sync with the compiler implementation.
-    // pub const Attributes = struct {
-    //     @"comptime": bool = false,
-    //     @"align": ?usize = null,
-    //     default_value_ptr: ?*const anyopaque = null,
-    // };
+    const field_types: [tuple.len]type = undefined;
+    for (field_types) |*types| {
+        types.* = FetchTarget;
+    }
 
     const field_attrs: [tuple.len]std.builtin.Type.StructField.Attributes = undefined;
     for (field_attrs) |*attr| {
