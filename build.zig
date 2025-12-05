@@ -1,7 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
-const EnumLiteral = enum { enum_literal };
+const EnumLiteral = @EnumLiteral();
 
 const FetchTarget = struct {
     name: []const u8,
