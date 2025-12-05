@@ -378,7 +378,7 @@ pub const Toolbox = struct {
         const path = try self.buildRootJoin(&.{
             ".references", @tagName(repo),
         });
-        return std.mem.trim(u8, try self.getBuilder().build_root.handle.readFileAlloc(self.getAllocator(), path, std.math.maxInt(usize)), " \n");
+        return std.mem.trim(u8, try self.getBuilder().build_root.handle.readFileAlloc(path, self.getAllocator(), std.math.maxInt(usize)), " \n");
     }
 };
 
